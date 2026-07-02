@@ -1,5 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
-import MobileFrame from './components/MobileFrame'
+import AuthLayout from './components/AuthLayout'
+import AppShell from './components/AppShell'
 import ProtectedRoute from './components/ProtectedRoute'
 import Login from './pages/Login'
 import Register from './pages/Register'
@@ -13,67 +14,93 @@ import Ajustes from './pages/Ajustes'
 
 export default function App() {
   return (
-    <MobileFrame>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/registro" element={<Register />} />
-        <Route
-          path="/onboarding"
-          element={
-            <ProtectedRoute>
+    <Routes>
+      <Route
+        path="/login"
+        element={
+          <AuthLayout>
+            <Login />
+          </AuthLayout>
+        }
+      />
+      <Route
+        path="/registro"
+        element={
+          <AuthLayout>
+            <Register />
+          </AuthLayout>
+        }
+      />
+      <Route
+        path="/onboarding"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Onboarding />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/entrenamiento"
-          element={
-            <ProtectedRoute>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/entrenamiento"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Entrenamiento />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/alimentacion"
-          element={
-            <ProtectedRoute>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/alimentacion"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Alimentacion />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/progreso"
-          element={
-            <ProtectedRoute>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/progreso"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Progreso />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/logros"
-          element={
-            <ProtectedRoute>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/logros"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Logros />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/ajustes"
-          element={
-            <ProtectedRoute>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/ajustes"
+        element={
+          <ProtectedRoute>
+            <AppShell>
               <Ajustes />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
-    </MobileFrame>
+            </AppShell>
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
   )
 }

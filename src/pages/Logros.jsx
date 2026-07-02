@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { CATALOGO_LOGROS, evaluarLogros } from '../lib/business'
 import { Header, Card } from '../components/UI'
-import BottomNav from '../components/BottomNav'
 import { Trophy, Lock } from 'lucide-react'
 
 export default function Logros() {
@@ -70,7 +69,7 @@ export default function Logros() {
       </div>
 
       <div className="h-4" />
-      <BottomNav />
+      
     </div>
   )
 }

@@ -12,56 +12,6 @@ body {
   color: #14201F;
 }
 
-/* Simula el marco de un teléfono para presentar la app en desktop,
-   pero el layout interno es responsive y funciona igual en un celular real. */
-.phone-frame {
-  width: 100%;
-  max-width: 420px;
-  min-height: 100vh;
-  margin: 0 auto;
-  background: #FAF6EE;
-  position: relative;
-  box-shadow: 0 0 0 1px rgba(15, 61, 62, 0.06);
-  overflow: hidden;
-}
-
-@media (min-width: 640px) {
-  .phone-frame {
-    min-height: 860px;
-    margin-top: 24px;
-    margin-bottom: 24px;
-    border-radius: 2.5rem;
-    box-shadow: 0 30px 60px -20px rgba(15, 61, 62, 0.35), 0 0 0 10px #0F3D3E;
-    overflow: hidden;
-  }
-}
-
-.notch {
-  display: none;
-}
-
-@media (min-width: 640px) {
-  .notch {
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 130px;
-    height: 22px;
-    background: #0F3D3E;
-    border-bottom-left-radius: 14px;
-    border-bottom-right-radius: 14px;
-    z-index: 30;
-  }
-}
-
-.scroll-area {
-  height: 100%;
-  overflow-y: auto;
-  padding-bottom: 88px;
-}
-
 ::-webkit-scrollbar {
   width: 6px;
 }

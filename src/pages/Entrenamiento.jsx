@@ -4,7 +4,6 @@ import { supabase } from '../lib/supabaseClient'
 import { generarPlanEntrenamiento } from '../lib/business'
 import { EJERCICIOS } from '../data/ejerciciosCatalogo'
 import { Header, Card, Button } from '../components/UI'
-import BottomNav from '../components/BottomNav'
 import { CheckCircle2, Circle } from 'lucide-react'
 
 export default function Entrenamiento() {
@@ -129,7 +128,7 @@ export default function Entrenamiento() {
       </div>
 
       <div className="h-4" />
-      <BottomNav />
+      
     </div>
   )
 }

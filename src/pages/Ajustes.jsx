@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { Header, Card, Button, Field, inputClass } from '../components/UI'
-import BottomNav from '../components/BottomNav'
 
 const TIPOS = [
   { value: 'entrenamiento', label: 'Entrenamiento' },
@@ -96,7 +95,7 @@ export default function Ajustes() {
       </div>
 
       <div className="h-4" />
-      <BottomNav />
+      
     </div>
   )
 }

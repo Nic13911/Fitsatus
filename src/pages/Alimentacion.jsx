@@ -3,7 +3,6 @@ import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { generarPlanAlimenticio } from '../lib/business'
 import { Header, Card, Button, Field, inputClass } from '../components/UI'
-import BottomNav from '../components/BottomNav'
 
 function hoyISO() {
   return new Date().toISOString().slice(0, 10)
@@ -180,7 +179,7 @@ export default function Alimentacion() {
       </div>
 
       <div className="h-4" />
-      <BottomNav />
+      
     </div>
   )
 }

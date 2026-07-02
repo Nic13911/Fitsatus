@@ -25,7 +25,7 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-full flex flex-col justify-center px-6 py-10">
+    <div className="px-6 sm:px-8 py-10">
       <p className="text-amber font-semibold text-xs tracking-[0.2em] uppercase mb-2">FitSatus</p>
       <h1 className="font-display text-3xl font-bold text-ink-dark mb-1">Bienvenido de vuelta</h1>
       <p className="text-sm text-ink-dark/60 mb-6">Inicia sesión para seguir tu plan.</p>

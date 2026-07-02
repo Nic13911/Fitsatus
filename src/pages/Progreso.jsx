@@ -3,7 +3,6 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianG
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { Header, Card, Button, Field, inputClass } from '../components/UI'
-import BottomNav from '../components/BottomNav'
 
 export default function Progreso() {
   const { usuario } = useAuth()
@@ -106,7 +105,7 @@ export default function Progreso() {
       </div>
 
       <div className="h-4" />
-      <BottomNav />
+      
     </div>
   )
 }

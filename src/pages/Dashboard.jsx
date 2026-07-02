@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { calcularIMC, clasificarIMC } from '../lib/business'
 import { Header, Card } from '../components/UI'
-import BottomNav from '../components/BottomNav'
 import { Flame, Ruler, Target } from 'lucide-react'
 
 export default function Dashboard() {
@@ -82,7 +81,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      <BottomNav />
+      
     </div>
   )
 }
