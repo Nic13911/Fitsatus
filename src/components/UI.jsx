@@ -28,9 +28,9 @@ export function Button({ children, variant = 'primary', className = '', ...props
   )
 }
 
-export function Field({ label, children }) {
+export function Field({ label, children, className = '' }) {
   return (
-    <label className="block mb-4">
+    <label className={`block mb-4 ${className}`}>
       <span className="block text-xs font-semibold text-ink-dark/70 uppercase tracking-wide mb-1">{label}</span>
       {children}
     </label>

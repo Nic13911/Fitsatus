@@ -45,22 +45,33 @@ export function calcularTDEE({ pesoKg, estaturaCm, edad, sexo = 'otro', nivelAct
 }
 
 // ---- Generador de Planes: Entrenamiento -----------------------------------
+// Cada objetivo define sesiones (día + foco) y un "pool" de ejercicios
+// posibles para ese foco. Al generar/regenerar el plan se eligen ejercicios
+// al azar desde el pool, así cada generación entrega variedad real y no
+// siempre el mismo resultado.
+
+const POOLS_EJERCICIOS = {
+  fullbody_cardio: ['sentadillas', 'flexiones', 'plancha', 'saltos_cuerda', 'burpees', 'mountain_climbers'],
+  inferior_core: ['zancadas', 'puente_gluteo', 'plancha', 'burpees', 'sentadillas', 'mountain_climbers'],
+  superior: ['flexiones', 'remo_banda', 'press_hombro_mancuerna', 'plancha'],
+  inferior: ['sentadillas', 'zancadas', 'puente_gluteo']
+}
 
 const RUTINAS_BASE = {
   bajar_peso: [
-    { dia: 'Lunes', foco: 'Full body + cardio', ejercicios: ['sentadillas', 'flexiones', 'plancha', 'saltos_cuerda'] },
-    { dia: 'Miércoles', foco: 'Tren inferior + core', ejercicios: ['zancadas', 'puente_gluteo', 'plancha', 'burpees'] },
-    { dia: 'Viernes', foco: 'Full body + cardio', ejercicios: ['sentadillas', 'remo_banda', 'mountain_climbers', 'saltos_cuerda'] }
+    { dia: 'Lunes', foco: 'Full body + cardio', pool: 'fullbody_cardio', cantidad: 4 },
+    { dia: 'Miércoles', foco: 'Tren inferior + core', pool: 'inferior_core', cantidad: 4 },
+    { dia: 'Viernes', foco: 'Full body + cardio', pool: 'fullbody_cardio', cantidad: 4 }
   ],
   ganar_musculo: [
-    { dia: 'Lunes', foco: 'Tren superior', ejercicios: ['flexiones', 'remo_banda', 'press_hombro_mancuerna', 'plancha'] },
-    { dia: 'Martes', foco: 'Tren inferior', ejercicios: ['sentadillas', 'zancadas', 'puente_gluteo'] },
-    { dia: 'Jueves', foco: 'Tren superior', ejercicios: ['flexiones', 'remo_banda', 'press_hombro_mancuerna'] },
-    { dia: 'Viernes', foco: 'Tren inferior + core', ejercicios: ['sentadillas', 'zancadas', 'plancha'] }
+    { dia: 'Lunes', foco: 'Tren superior', pool: 'superior', cantidad: 3 },
+    { dia: 'Martes', foco: 'Tren inferior', pool: 'inferior', cantidad: 3 },
+    { dia: 'Jueves', foco: 'Tren superior', pool: 'superior', cantidad: 3 },
+    { dia: 'Viernes', foco: 'Tren inferior + core', pool: 'inferior_core', cantidad: 3 }
   ],
   mantenimiento: [
-    { dia: 'Lunes', foco: 'Full body', ejercicios: ['sentadillas', 'flexiones', 'plancha'] },
-    { dia: 'Jueves', foco: 'Full body + cardio', ejercicios: ['zancadas', 'remo_banda', 'saltos_cuerda'] }
+    { dia: 'Lunes', foco: 'Full body', pool: 'fullbody_cardio', cantidad: 3 },
+    { dia: 'Jueves', foco: 'Full body + cardio', pool: 'fullbody_cardio', cantidad: 3 }
   ]
 }
 
@@ -68,6 +79,17 @@ const NIVEL_DIFICULTAD = {
   principiante: { series: 3, repeticiones: '10-12', descanso: '60 seg' },
   intermedio: { series: 4, repeticiones: '10-15', descanso: '45 seg' },
   experimentado: { series: 5, repeticiones: '12-20', descanso: '30 seg' }
+}
+
+// Elige `cantidad` elementos al azar sin repetir desde un arreglo.
+function elegirAlAzar(lista, cantidad) {
+  const copia = [...lista]
+  const resultado = []
+  while (copia.length && resultado.length < cantidad) {
+    const indice = Math.floor(Math.random() * copia.length)
+    resultado.push(copia.splice(indice, 1)[0])
+  }
+  return resultado
 }
 
 export function generarPlanEntrenamiento({ tipoObjetivo = 'mantenimiento', nivelExperiencia = 'principiante' }) {
@@ -79,7 +101,9 @@ export function generarPlanEntrenamiento({ tipoObjetivo = 'mantenimiento', nivel
     frecuenciaSemanal: rutina.length,
     fechaGeneracion: new Date().toISOString(),
     contenido: rutina.map((sesion) => ({
-      ...sesion,
+      dia: sesion.dia,
+      foco: sesion.foco,
+      ejercicios: elegirAlAzar(POOLS_EJERCICIOS[sesion.pool], sesion.cantidad),
       series: parametros.series,
       repeticiones: parametros.repeticiones,
       descanso: parametros.descanso
@@ -101,21 +125,34 @@ const MACROS_OBJETIVO = {
   mantenimiento: { proteina: 0.3, carbohidratos: 0.4, grasas: 0.3 }
 }
 
-const SUGERENCIAS_COMIDAS = {
-  bajar_peso: [
-    'Desayuno: avena con fruta y claras de huevo',
-    'Almuerzo: pechuga de pollo, ensalada y quinoa',
-    'Cena: pescado al horno con vegetales al vapor'
-  ],
-  ganar_musculo: [
-    'Desayuno: huevos completos, pan integral y palta',
-    'Almuerzo: carne o legumbres, arroz y ensalada',
-    'Cena: pasta integral con pollo y vegetales'
-  ],
-  mantenimiento: [
-    'Desayuno: yogur, avena y frutos secos',
-    'Almuerzo: proteína a elección, arroz o papas y ensalada',
-    'Cena: sopa de verduras con proteína ligera'
+const OPCIONES_COMIDAS = {
+  bajar_peso: {
+    desayuno: ['Avena con fruta y claras de huevo', 'Yogur descremado con frutos rojos', 'Tostadas integrales con palta y tomate'],
+    almuerzo: ['Pechuga de pollo, ensalada y quinoa', 'Pescado a la plancha con vegetales salteados', 'Ensalada de legumbres con atún'],
+    cena: ['Pescado al horno con vegetales al vapor', 'Crema de verduras con pollo desmenuzado', 'Tortilla de claras con espinaca']
+  },
+  ganar_musculo: {
+    desayuno: ['Huevos completos, pan integral y palta', 'Yogur griego con avena y plátano', 'Batido de proteína con avena y maní'],
+    almuerzo: ['Carne o legumbres, arroz y ensalada', 'Pollo con papas y vegetales salteados', 'Salmón con arroz integral'],
+    cena: ['Pasta integral con pollo y vegetales', 'Arroz con carne y ensalada', 'Wrap integral con pavo y queso']
+  },
+  mantenimiento: {
+    desayuno: ['Yogur, avena y frutos secos', 'Pan integral con huevo y palta', 'Fruta con yogur natural'],
+    almuerzo: ['Proteína a elección, arroz o papas y ensalada', 'Pollo al horno con vegetales', 'Legumbres guisadas con arroz'],
+    cena: ['Sopa de verduras con proteína ligera', 'Ensalada completa con huevo', 'Sándwich integral con pavo y vegetales']
+  }
+}
+
+function elegirUno(lista) {
+  return lista[Math.floor(Math.random() * lista.length)]
+}
+
+function generarSugerencias(tipoObjetivo) {
+  const opciones = OPCIONES_COMIDAS[tipoObjetivo] ?? OPCIONES_COMIDAS.mantenimiento
+  return [
+    `Desayuno: ${elegirUno(opciones.desayuno)}`,
+    `Almuerzo: ${elegirUno(opciones.almuerzo)}`,
+    `Cena: ${elegirUno(opciones.cena)}`
   ]
 }
 
@@ -132,7 +169,7 @@ export function generarPlanAlimenticio({ tdee, tipoObjetivo = 'mantenimiento' })
       carbohidratosG: Math.round((caloriasObjetivo * macros.carbohidratos) / 4),
       grasasG: Math.round((caloriasObjetivo * macros.grasas) / 9)
     },
-    sugerencias: SUGERENCIAS_COMIDAS[tipoObjetivo] ?? SUGERENCIAS_COMIDAS.mantenimiento,
+    sugerencias: generarSugerencias(tipoObjetivo),
     fechaGeneracion: new Date().toISOString()
   }
 }

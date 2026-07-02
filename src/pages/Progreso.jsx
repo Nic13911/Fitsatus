@@ -70,7 +70,7 @@ export default function Progreso() {
         <Card>
           <p className="font-semibold text-sm text-ink-dark mb-2">Registrar peso de hoy</p>
           <form onSubmit={registrarPeso} className="flex gap-2 items-end">
-            <Field label="Peso (kg)">
+            <Field label="Peso (kg)" className="flex-1 min-w-0">
               <input
                 type="number"
                 step="0.1"
@@ -81,7 +81,7 @@ export default function Progreso() {
                 placeholder="70.5"
               />
             </Field>
-            <Button variant="accent" type="submit" className="w-auto px-4 mb-4">
+            <Button variant="accent" type="submit" className="w-auto px-4 mb-4 shrink-0">
               Guardar
             </Button>
           </form>

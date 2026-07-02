@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { generarPlanAlimenticio } from '../lib/business'
-import { Header, Card, Button, Field, inputClass } from '../components/UI'
+import { Header, Card, Button, Field, inputClass, Alert } from '../components/UI'
 
 function hoyISO() {
   return new Date().toISOString().slice(0, 10)
@@ -17,6 +17,8 @@ export default function Alimentacion() {
   const [nombreAlimento, setNombreAlimento] = useState('')
   const [caloriasAlimento, setCaloriasAlimento] = useState('')
   const [cargando, setCargando] = useState(true)
+  const [error, setError] = useState(null)
+  const [mensaje, setMensaje] = useState(null)
 
   async function cargarTodo() {
     const { data: objetivoData } = await supabase
@@ -71,16 +73,28 @@ export default function Alimentacion() {
 
   async function regenerarPlan() {
     if (!objetivo) return
+    setError(null)
+    setMensaje(null)
     const nuevoPlan = generarPlanAlimenticio({ tdee: objetivo.tdee, tipoObjetivo: objetivo.tipo_objetivo })
-    if (!nuevoPlan) return
-    await supabase.from('planes_alimenticios').insert({
+    if (!nuevoPlan) {
+      setError('Necesitas completar tu perfil y objetivo antes de generar un plan alimenticio.')
+      return
+    }
+    const { error: insertError } = await supabase.from('planes_alimenticios').insert({
       usuario_id: usuario.id,
       calorias_objetivo: nuevoPlan.caloriasObjetivo,
       distribucion_macros: nuevoPlan.distribucionMacros,
       sugerencias: nuevoPlan.sugerencias,
       fecha_generacion: nuevoPlan.fechaGeneracion
     })
+    if (insertError) {
+      console.error(insertError)
+      setError('No se pudo generar el plan: ' + insertError.message)
+      return
+    }
     await cargarTodo()
+    setMensaje('¡Plan actualizado!')
+    setTimeout(() => setMensaje(null), 3000)
   }
 
   async function agregarAlimento(e) {
@@ -113,6 +127,8 @@ export default function Alimentacion() {
       <Header eyebrow="Nutrición" title="Plan alimenticio" subtitle="Objetivo calórico y registro diario" />
 
       <div className="px-6 -mt-4 space-y-4">
+        {error && <Alert tone="error">{error}</Alert>}
+        {mensaje && <Alert tone="success">{mensaje}</Alert>}
         <Card>
           <p className="text-3xl font-display font-bold text-ink-dark">{objetivoCalorico} kcal</p>
           <p className="text-xs text-ink-dark/60 mb-3">Objetivo calórico diario</p>
@@ -143,7 +159,7 @@ export default function Alimentacion() {
           </p>
 
           <form onSubmit={agregarAlimento} className="flex gap-2 items-end">
-            <Field label="Alimento">
+            <Field label="Alimento" className="flex-1 min-w-0">
               <input
                 className={inputClass}
                 value={nombreAlimento}
@@ -151,7 +167,7 @@ export default function Alimentacion() {
                 placeholder="Ej: Ensalada de pollo"
               />
             </Field>
-            <Field label="Kcal">
+            <Field label="Kcal" className="w-20 shrink-0">
               <input
                 type="number"
                 min="1"
@@ -161,7 +177,7 @@ export default function Alimentacion() {
                 placeholder="350"
               />
             </Field>
-            <Button variant="accent" type="submit" className="w-auto px-4 mb-4">
+            <Button variant="accent" type="submit" className="w-auto px-4 mb-4 shrink-0">
               +
             </Button>
           </form>

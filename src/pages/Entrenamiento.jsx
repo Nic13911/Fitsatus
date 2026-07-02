@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext'
 import { supabase } from '../lib/supabaseClient'
 import { generarPlanEntrenamiento } from '../lib/business'
 import { EJERCICIOS } from '../data/ejerciciosCatalogo'
-import { Header, Card, Button } from '../components/UI'
+import { Header, Card, Button, Alert } from '../components/UI'
 import { CheckCircle2, Circle } from 'lucide-react'
 
 export default function Entrenamiento() {
@@ -43,14 +43,19 @@ export default function Entrenamiento() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [usuario.id])
 
+  const [error, setError] = useState(null)
+  const [mensaje, setMensaje] = useState(null)
+
   async function regenerarPlan() {
     if (!perfil || !objetivo) return
     setRegenerando(true)
+    setError(null)
+    setMensaje(null)
     const nuevoPlan = generarPlanEntrenamiento({
       tipoObjetivo: objetivo.tipo_objetivo,
       nivelExperiencia: perfil.nivel_experiencia
     })
-    await supabase.from('planes_entrenamiento').insert({
+    const { error: insertError } = await supabase.from('planes_entrenamiento').insert({
       usuario_id: usuario.id,
       objetivo_id: objetivo.id,
       nivel_dificultad: nuevoPlan.nivelDificultad,
@@ -58,8 +63,16 @@ export default function Entrenamiento() {
       contenido: nuevoPlan.contenido,
       fecha_generacion: nuevoPlan.fechaGeneracion
     })
+    if (insertError) {
+      console.error(insertError)
+      setError('No se pudo generar el plan: ' + insertError.message)
+      setRegenerando(false)
+      return
+    }
     await cargarPlan()
     setRegenerando(false)
+    setMensaje('¡Plan actualizado!')
+    setTimeout(() => setMensaje(null), 3000)
   }
 
   async function marcarCumplido(index) {
@@ -77,6 +90,8 @@ export default function Entrenamiento() {
       <Header eyebrow="Tu rutina" title="Plan de entrenamiento" subtitle={`Nivel: ${plan?.nivel_dificultad ?? '—'}`} />
 
       <div className="px-6 -mt-4 space-y-3">
+        {error && <Alert tone="error">{error}</Alert>}
+        {mensaje && <Alert tone="success">{mensaje}</Alert>}
         {plan?.contenido?.map((sesion, i) => (
           <Card key={i}>
             <div className="flex items-start justify-between">
