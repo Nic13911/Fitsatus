@@ -262,8 +262,8 @@ export default function Ajustes() {
 
         <Card>
           <p className="font-semibold text-sm text-ink-dark mb-2">Recordatorios</p>
-          <form onSubmit={agregarRecordatorio} className="flex gap-2 items-end mb-3">
-            <Field label="Tipo" className="flex-1 min-w-0">
+          <form onSubmit={agregarRecordatorio} className="flex flex-col sm:flex-row gap-2 sm:items-end mb-3">
+            <Field label="Tipo" className="w-full sm:flex-1 sm:min-w-0">
               <select className={inputClass} value={tipo} onChange={(e) => setTipo(e.target.value)}>
                 {TIPOS.map((t) => (
                   <option key={t.value} value={t.value}>
@@ -272,10 +272,10 @@ export default function Ajustes() {
                 ))}
               </select>
             </Field>
-            <Field label="Hora" className="w-28 shrink-0">
+            <Field label="Hora" className="w-full sm:w-28 sm:shrink-0">
               <input type="time" className={inputClass} value={hora} onChange={(e) => setHora(e.target.value)} />
             </Field>
-            <Button variant="accent" type="submit" className="w-auto px-4 mb-4 shrink-0">
+            <Button variant="accent" type="submit" className="w-full sm:w-auto sm:px-4 sm:mb-4 shrink-0">
               Añadir
             </Button>
           </form>

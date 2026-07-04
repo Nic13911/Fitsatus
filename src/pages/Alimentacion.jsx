@@ -158,8 +158,8 @@ export default function Alimentacion() {
             {totalHoy} / {objetivoCalorico} kcal consumidas
           </p>
 
-          <form onSubmit={agregarAlimento} className="flex gap-2 items-end">
-            <Field label="Alimento" className="flex-1 min-w-0">
+          <form onSubmit={agregarAlimento} className="flex flex-col sm:flex-row gap-2 sm:items-end">
+            <Field label="Alimento" className="w-full sm:flex-1 sm:min-w-0">
               <input
                 className={inputClass}
                 value={nombreAlimento}
@@ -167,7 +167,7 @@ export default function Alimentacion() {
                 placeholder="Ej: Ensalada de pollo"
               />
             </Field>
-            <Field label="Kcal" className="w-20 shrink-0">
+            <Field label="Kcal" className="w-full sm:w-20 sm:shrink-0">
               <input
                 type="number"
                 min="1"
@@ -177,8 +177,8 @@ export default function Alimentacion() {
                 placeholder="350"
               />
             </Field>
-            <Button variant="accent" type="submit" className="w-auto px-4 mb-4 shrink-0">
-              +
+            <Button variant="accent" type="submit" className="w-full sm:w-auto sm:px-4 sm:mb-4 shrink-0">
+              Agregar
             </Button>
           </form>
 
