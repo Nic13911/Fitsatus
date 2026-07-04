@@ -1,6 +1,6 @@
 export function Header({ eyebrow, title, subtitle }) {
   return (
-    <header className="px-6 pt-8 pb-4 bg-ink text-paper rounded-b-3xl">
+    <header className="px-6 pt-8 pb-10 bg-ink text-paper rounded-b-3xl">
       {eyebrow && <p className="text-amber text-xs font-semibold tracking-[0.2em] uppercase mb-1">{eyebrow}</p>}
       <h1 className="font-display text-2xl font-bold leading-tight">{title}</h1>
       {subtitle && <p className="text-paper/70 text-sm mt-1">{subtitle}</p>}
